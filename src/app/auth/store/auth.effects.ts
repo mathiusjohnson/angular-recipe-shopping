@@ -119,7 +119,7 @@ export class AuthEffects {
 
   @Effect({ dispatch: false })
   authRedirect = this.actions$.pipe(
-    ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT),
+    ofType(AuthActions.AUTHENTICATE_SUCCESS),
     tap(() => {
       this.router.navigate(['/']);
     })
@@ -154,11 +154,6 @@ export class AuthEffects {
           token: loadedUser.token,
           expirationDate: new Date(userData._tokenExpirationDate)
         });
-
-        // const expirationDuration =
-        //   new Date(userData._tokenExpirationDate).getTime() -
-        //   new Date().getTime();
-        // this.autoLogout(expirationDuration);
       }
       return { type: 'DUMMY' };
     })
@@ -169,6 +164,7 @@ export class AuthEffects {
     ofType(AuthActions.LOGOUT),
     tap(() => {
       localStorage.removeItem('userData');
+      this.router.navigate(['/auth'])
     })
   );
 
