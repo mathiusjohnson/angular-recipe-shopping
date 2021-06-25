@@ -1,12 +1,10 @@
 import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
-
-import { AuthService, AuthResponseData } from './auth.service';
 import * as fromApp from '../store/app.reducer';
 import * as AuthActions from './store/auth.actions';
 @Component({
@@ -22,9 +20,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   private closeSub: Subscription;
   private storeSub: Subscription;
 
-  constructor(private authService: AuthService,
-              private router: Router,
-              private componentFactoryResolver: ComponentFactoryResolver,
+  constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private store: Store<fromApp.AppState>) {}
 
 
@@ -50,7 +46,6 @@ export class AuthComponent implements OnInit, OnDestroy {
     const password = form.value.password;
     this.isLoading = true;
     if (this.isLoginMode) {
-      // authObs = this.authService.login(email, password);
       this.store.dispatch(
         new AuthActions.LoginStart({email, password})
       )
@@ -63,7 +58,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
 
   onHandleError() {
-    this.error = null;
+    this.store.dispatch(new AuthActions.ClearError())
   }
 
   ngOnDestroy() {
